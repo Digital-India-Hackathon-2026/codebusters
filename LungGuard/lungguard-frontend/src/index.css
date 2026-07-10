@@ -1,1 +1,225 @@
+/* @import "tailwindcss";
+
+.lung-background {
+  position: absolute;
+  top: 50%;
+  left: 65%;
+  transform: translate(-50%, -50%);
+
+  width: min(45vw, 620px);
+  height: auto;
+  object-fit: contain;
+
+  opacity: 0.12;
+  mix-blend-mode: screen;
+
+  filter:
+    brightness(0.65) contrast(1.2) saturate(1.1);
+
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+
+  -webkit-mask-image: radial-gradient(ellipse at center,
+      rgba(0, 0, 0, 1) 20%,
+      rgba(0, 0, 0, 0.8) 45%,
+      rgba(0, 0, 0, 0.3) 65%,
+      transparent 80%);
+
+  mask-image: radial-gradient(ellipse at center,
+      rgba(0, 0, 0, 1) 20%,
+      rgba(0, 0, 0, 0.8) 45%,
+      rgba(0, 0, 0, 0.3) 65%,
+      transparent 80%);
+}
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.features-section {
+  position: relative;
+  z-index: 3;
+  background: #020718;
+} */
+
+/* .lung-background {
+   */
+
 @import "tailwindcss";
+
+/* 
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lung-background {
+  position: absolute;
+  top: 48%;
+  left: 62%;
+  transform: translate(-50%, -50%);
+
+  width: min(46vw, 650px);
+  height: auto;
+  object-fit: contain;
+
+  opacity: 0.16;
+  mix-blend-mode: normal;
+
+  filter:
+    brightness(0.8) contrast(1.15) saturate(1.05);
+
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+
+  -webkit-mask-image: radial-gradient(ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.85) 55%,
+      rgba(0, 0, 0, 0.35) 75%,
+      transparent 94%);
+
+  mask-image: radial-gradient(ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.85) 55%,
+      rgba(0, 0, 0, 0.35) 75%,
+      transparent 94%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 1024px) {
+  .lung-background {
+    left: 68%;
+    width: 580px;
+    opacity: 0.33;
+  }
+} */
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  min-height: 650px;
+  padding-top: 90px;
+  padding-bottom: 120px;
+}
+
+.lung-background {
+  position: absolute;
+
+  /* Move the image upward */
+  top: 45%;
+
+  /* Keep it slightly toward the right */
+  left: 57%;
+
+  transform: translate(-50%, -50%);
+
+  /* Increase image size */
+  width: min(58vw, 780px);
+  max-height: 620px;
+  height: auto;
+  object-fit: contain;
+
+  /* Make it more visible */
+  opacity: 0.22;
+  mix-blend-mode: screen;
+
+  filter:
+    brightness(0.9) contrast(1.18) saturate(1.15);
+
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+
+  -webkit-mask-image: radial-gradient(ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.9) 55%,
+      rgba(0, 0, 0, 0.45) 75%,
+      transparent 94%);
+
+  mask-image: radial-gradient(ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.9) 55%,
+      rgba(0, 0, 0, 0.45) 75%,
+      transparent 94%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.features-section {
+  position: relative;
+  z-index: 3;
+  margin-top: 32px;
+  background: #020718;
+}
+
+@media (max-width: 1024px) {
+  .hero-section {
+    min-height: 610px;
+    padding-top: 80px;
+    padding-bottom: 100px;
+  }
+
+  .lung-background {
+    top: 47%;
+    left: 62%;
+    width: 700px;
+    opacity: 0.17;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 65px;
+    padding-bottom: 80px;
+  }
+
+  .lung-background {
+    position: absolute;
+    top: 45%;
+    left: 57%;
+    transform: translate(-50%, -50%);
+
+    width: min(58vw, 780px);
+    max-height: 620px;
+    height: auto;
+    object-fit: contain;
+
+    opacity: 0.26;
+    mix-blend-mode: screen;
+
+    filter:
+      brightness(1.15) contrast(1.22) saturate(1.45) drop-shadow(0 0 18px rgba(0, 200, 255, 0.18)) drop-shadow(0 0 40px rgba(0, 255, 220, 0.08));
+
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+}
