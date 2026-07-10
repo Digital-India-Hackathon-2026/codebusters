@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { Shield, Brain, Heart, ArrowRight, Activity, Zap, CheckCircle } from "lucide-react";
+import { Shield, Brain, Heart, ArrowRight, Activity, CheckCircle, ScanSearch, TrendingUp, Bot } from "lucide-react";
 import { motion } from "framer-motion";
 import lungBg from "../assets/lung-bg.png";
+import FeatureCard from "../components/FeatureCard";
+import StatisticsSection from "../components/StatisticsSection";
+import CTASection from "../components/CTASection";
 
 function Home() {
   const token = localStorage.getItem("token");
@@ -18,6 +21,45 @@ function Home() {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   };
+
+  const featureData = [
+    {
+      title: "ML Risk Scoring",
+      description: "Trains an intelligent RandomForest model analyzing age, weight, symptoms, and habits to evaluate lung and liver integrity.",
+      icon: Shield,
+      colorClass: "text-sky-400 bg-sky-500/10 border-sky-500/20"
+    },
+    {
+      title: "CNN X-ray Scanner",
+      description: "Employs PyTorch ResNet18 neural network classifier to screen chest scans for signs of Pneumonia or malignancies.",
+      icon: Brain,
+      colorClass: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+    },
+    {
+      title: "Habit Prognosis",
+      description: "Simulates future lung capacities, COPD risks, and monetary spending across 5 & 10 years to encourage positive changes.",
+      icon: Heart,
+      colorClass: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
+    },
+    {
+      title: "Grad-CAM Visual Analysis",
+      description: "Highlights the chest X-ray regions that influenced the AI prediction, making the model's analysis easier to understand.",
+      icon: ScanSearch,
+      colorClass: "text-purple-400 bg-purple-500/10 border-purple-500/20"
+    },
+    {
+      title: "Health Timeline & Risk Trends",
+      description: "Combines risk assessments, X-ray results, simulations, and recovery progress into a unified health timeline.",
+      icon: TrendingUp,
+      colorClass: "text-amber-400 bg-amber-500/10 border-amber-500/20"
+    },
+    {
+      title: "AI Health Copilot",
+      description: "Explains health results, risk factors, reports, and preventive actions through a simple conversational assistant.",
+      icon: Bot,
+      colorClass: "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    }
+  ];
 
   return (
     <div className="relative min-h-[calc(100vh-8rem)] flex flex-col justify-center py-10">
@@ -87,51 +129,35 @@ function Home() {
         </div>
 
         {/* Features Section Wrapper */}
-        <div className="features-section py-8 px-4 sm:px-0 rounded-3xl">
+        <div className="features-section py-8 px-4 sm:px-0 rounded-3xl mt-12">
+          
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-black text-slate-100 mb-3">
+              Everything You Need for Smarter Lung Health
+            </h2>
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+              Intelligent screening, visual explanations, health tracking, and personalized guidance in one secure platform.
+            </p>
+          </div>
+
           {/* Features Grid */}
           <motion.div
             variants={containerVariants}
-            className="grid md:grid-cols-3 gap-6 text-left"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left"
           >
-            <motion.div
-              variants={itemVariants}
-              className="bg-slate-900/40 backdrop-blur-md border border-slate-900 hover:border-slate-800/80 p-6 rounded-2xl shadow-xl transition-all group"
-            >
-              <div className="w-12 h-12 bg-sky-500/10 rounded-xl flex items-center justify-center border border-sky-500/20 text-sky-400 mb-5 group-hover:scale-110 transition-transform">
-                <Shield size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-slate-200 mb-2">ML Risk Scoring</h3>
-              <p className="text-slate-405 text-sm leading-relaxed">
-                Trains an intelligent RandomForest model analyzing age, weight, symptoms, and habits to evaluate lung and liver integrity.
-              </p>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="bg-slate-900/40 backdrop-blur-md border border-slate-900 hover:border-slate-800/80 p-6 rounded-2xl shadow-xl transition-all group"
-            >
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-400 mb-5 group-hover:scale-110 transition-transform">
-                <Brain size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-slate-200 mb-2">CNN X-ray Scanner</h3>
-              <p className="text-slate-405 text-sm leading-relaxed">
-                Employs PyTorch ResNet18 neural network classifier to screen chest scans for signs of Pneumonia or malignancies.
-              </p>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="bg-slate-900/40 backdrop-blur-md border border-slate-900 hover:border-slate-800/80 p-6 rounded-2xl shadow-xl transition-all group"
-            >
-              <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20 text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                <Heart size={22} />
-              </div>
-              <h3 className="text-lg font-bold text-slate-200 mb-2">Habit Prognosis</h3>
-              <p className="text-slate-405 text-sm leading-relaxed">
-                Simulates future lung capacities, COPD risks, and monetary spending across 5 & 10 years to encourage positive changes.
-              </p>
-            </motion.div>
+            {featureData.map((feature, index) => (
+              <FeatureCard 
+                key={index}
+                title={feature.title}
+                description={feature.description}
+                icon={feature.icon}
+                colorClass={feature.colorClass}
+                itemVariants={itemVariants}
+              />
+            ))}
           </motion.div>
+
+          <StatisticsSection />
 
           {/* Quality list */}
           <motion.div
@@ -148,6 +174,8 @@ function Home() {
               <CheckCircle size={14} className="text-emerald-500" /> Secure Encryption
             </div>
           </motion.div>
+
+          <CTASection />
         </div>
       </motion.div>
     </div>

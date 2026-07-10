@@ -72,6 +72,40 @@ public class XrayReport {
      */
     private LocalDateTime uploadedAt;
 
+    /*
+     * Patient Name (from User)
+     */
+    private String patientName;
+
+    /*
+     * Exact scan timestamp
+     */
+    private LocalDateTime scanDate;
+
+    /*
+     * Clinical Summary
+     */
+    @Column(length = 2000)
+    private String clinicalSummary;
+
+    /*
+     * Recommendation
+     */
+    @Column(length = 2000)
+    private String recommendation;
+
+    /*
+     * Medical Disclaimer
+     */
+    @Column(length = 2000)
+    private String disclaimer;
+
+    /*
+     * Grad-CAM heatmap overlay (Base64-encoded PNG)
+     */
+    @Column(columnDefinition = "LONGTEXT")
+    private String heatmapBase64;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

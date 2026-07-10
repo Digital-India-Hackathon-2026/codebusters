@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Activity, LayoutDashboard, Calculator, LineChart, FileImage, MessageSquare, LogOut, User, LogIn, UserPlus, Menu, X } from "lucide-react";
+import { Activity, LayoutDashboard, Calculator, LineChart, FileImage, MessageSquare, LogOut, User, LogIn, UserPlus, Menu, X, Target } from "lucide-react";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -171,6 +171,13 @@ function Navbar() {
                 className={`flex items-center gap-3 p-2 rounded-lg text-sm ${isActive("/chat") ? "bg-slate-900 text-sky-400" : "text-slate-405"}`}
               >
                 <MessageSquare size={16} /> AI Health Copilot
+              </Link>
+              <Link 
+                to="/tracker" 
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 p-2 rounded-lg text-sm ${isActive("/tracker") ? "bg-slate-900 text-sky-400" : "text-slate-405"}`}
+              >
+                <Target size={16} /> Recovery Tracker
               </Link>
               <div className="h-px bg-slate-900 my-2" />
               <button 

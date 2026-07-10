@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
-import { Upload, FileImage, ShieldAlert, Sparkles, Loader2, CheckCircle, RefreshCw } from "lucide-react";
+import { Upload, FileImage, ShieldAlert, Sparkles, Loader2, CheckCircle, RefreshCw, FileText, Download, X, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function XrayUpload() {
@@ -12,6 +12,9 @@ function XrayUpload() {
   const [error, setError] = useState("");
   const [historyLoading, setHistoryLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [pdfLoading, setPdfLoading] = useState(null);
+  const [showHeatmap, setShowHeatmap] = useState(false);
 
   const fetchHistory = async () => {
     setHistoryLoading(true);
@@ -51,6 +54,7 @@ function XrayUpload() {
         setPreviewUrl(URL.createObjectURL(file));
         setResult(null);
         setError("");
+        setShowHeatmap(false);
       } else {
         setError("Only image files (JPEG, PNG) are supported.");
       }
@@ -64,6 +68,7 @@ function XrayUpload() {
       setPreviewUrl(URL.createObjectURL(file));
       setResult(null);
       setError("");
+      setShowHeatmap(false);
     }
   };
 
@@ -74,6 +79,7 @@ function XrayUpload() {
     setLoading(true);
     setError("");
     setResult(null);
+    setShowHeatmap(false);
 
     const formData = new FormData();
     formData.append("file", selectedFile);
@@ -98,6 +104,27 @@ function XrayUpload() {
     if (pred === "Normal") return "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
     if (pred === "Pneumonia") return "text-amber-400 bg-amber-500/10 border-amber-500/20";
     return "text-red-400 bg-red-500/10 border-red-500/20";
+  };
+
+  const handleDownloadPdf = async (id, fileName) => {
+    setPdfLoading(id);
+    try {
+      const res = await API.get(`/xray/report/${id}/pdf`, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Report_${fileName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Failed to download PDF", err);
+      setError("Failed to download PDF report.");
+    } finally {
+      setPdfLoading(null);
+    }
   };
 
   return (
@@ -179,7 +206,7 @@ function XrayUpload() {
                 <div className="flex gap-3">
                   <button 
                     type="button" 
-                    onClick={() => { setSelectedFile(null); setPreviewUrl(""); setResult(null); }}
+                    onClick={() => { setSelectedFile(null); setPreviewUrl(""); setResult(null); setShowHeatmap(false); }}
                     className="text-xs text-slate-450 hover:text-slate-300 font-bold cursor-pointer"
                   >
                     Clear
@@ -263,6 +290,99 @@ function XrayUpload() {
         </div>
       </div>
 
+      {/* Grad-CAM Image Comparison Section */}
+      <AnimatePresence>
+        {result && previewUrl && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-slate-900/40 backdrop-blur-md border border-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl space-y-5"
+          >
+            {/* Header with toggle */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
+                  <Sparkles size={18} className="text-sky-400" /> AI Visual Analysis
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  AI Attention Map — highlights regions that influenced the model prediction.
+                </p>
+              </div>
+              
+              {result.heatmapBase64 && (
+                <button
+                  onClick={() => setShowHeatmap(!showHeatmap)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                    showHeatmap
+                      ? "bg-sky-500/15 border-sky-500/30 text-sky-400"
+                      : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750"
+                  }`}
+                >
+                  {showHeatmap ? <EyeOff size={14} /> : <Eye size={14} />}
+                  {showHeatmap ? "Show Original" : "Show Heatmap"}
+                </button>
+              )}
+            </div>
+
+            {/* Image display */}
+            <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950/50 flex items-center justify-center min-h-[300px]">
+              <AnimatePresence mode="wait">
+                {showHeatmap && result.heatmapBase64 ? (
+                  <motion.div
+                    key="heatmap"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-full flex flex-col items-center p-4"
+                  >
+                    <img
+                      src={`data:image/png;base64,${result.heatmapBase64}`}
+                      alt="AI Attention Heatmap"
+                      className="max-h-[400px] object-contain rounded-lg shadow-lg"
+                    />
+                    <span className="mt-3 text-xs font-bold text-sky-400 uppercase tracking-wider">AI Attention Heatmap</span>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="original"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-full flex flex-col items-center p-4"
+                  >
+                    <img
+                      src={previewUrl}
+                      alt="Original X-ray Scan"
+                      className="max-h-[400px] object-contain rounded-lg shadow-lg"
+                    />
+                    <span className="mt-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Original Scan</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Heatmap unavailable message */}
+            {!result.heatmapBase64 && (
+              <div className="flex items-center gap-2.5 bg-slate-950/60 border border-slate-800 text-slate-500 p-3 rounded-xl text-xs">
+                <ShieldAlert size={14} className="shrink-0" />
+                Heatmap unavailable for this scan. The AI attention overlay could not be generated.
+              </div>
+            )}
+
+            {/* Medical Disclaimer */}
+            <div className="pt-3 border-t border-slate-800">
+              <p className="text-[11px] text-slate-500 italic leading-relaxed">
+                This visualization does not identify damaged regions. It is an AI-assisted screening aid that shows areas of model attention. Always consult a qualified healthcare professional for clinical decisions.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* History table */}
       <div className="bg-slate-900/40 backdrop-blur-md border border-slate-900 rounded-2xl p-6 shadow-xl space-y-4">
         <div className="flex justify-between items-center">
@@ -293,7 +413,7 @@ function XrayUpload() {
                   <th className="pb-3 pt-1">File Type</th>
                   <th className="pb-3 pt-1">AI Classification</th>
                   <th className="pb-3 pt-1">Confidence Score</th>
-                  <th className="pb-3 pt-1">Clinical Note</th>
+                  <th className="pb-3 pt-1 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-850">
@@ -308,7 +428,22 @@ function XrayUpload() {
                       </span>
                     </td>
                     <td className="py-3.5 font-bold text-slate-200">{row.confidence}%</td>
-                    <td className="py-3.5 text-xs text-slate-400 max-w-[200px] truncate" title={row.message}>{row.message}</td>
+                    <td className="py-3.5 flex justify-end gap-2">
+                      <button 
+                        onClick={() => setSelectedReport(row)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                      >
+                        <FileText size={14} /> View Report
+                      </button>
+                      <button 
+                        onClick={() => handleDownloadPdf(row.id, row.fileName)}
+                        disabled={pdfLoading === row.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {pdfLoading === row.id ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                        PDF
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -316,6 +451,83 @@ function XrayUpload() {
           </div>
         )}
       </div>
+
+      {/* Report Modal */}
+      <AnimatePresence>
+        {selectedReport && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                  <FileText className="text-sky-400" size={24} /> AI Analysis Report
+                </h3>
+                <button
+                  onClick={() => setSelectedReport(null)}
+                  className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800">
+                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">Patient Name</span>
+                    <span className="text-slate-200 font-medium">{selectedReport.patientName || "N/A"}</span>
+                  </div>
+                  <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800">
+                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">Scan Date</span>
+                    <span className="text-slate-200 font-medium">
+                      {selectedReport.scanDate ? new Date(selectedReport.scanDate).toLocaleString() : new Date(selectedReport.uploadedAt).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800">
+                   <div className="flex justify-between items-center">
+                     <div>
+                       <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">File Name</span>
+                       <span className="text-slate-200 text-sm font-medium">{selectedReport.fileName}</span>
+                     </div>
+                     <div className="text-right">
+                       <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block mb-1">AI Classification</span>
+                       <span className={`px-2 py-0.5 border text-xs font-bold rounded-lg inline-flex items-center gap-1.5 ${getPredictionColor(selectedReport.prediction)}`}>
+                         {selectedReport.prediction} ({selectedReport.confidence}%)
+                       </span>
+                     </div>
+                   </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-slate-300 mb-2 border-b border-slate-800 pb-2">Clinical Summary</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{selectedReport.clinicalSummary || selectedReport.message}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-slate-300 mb-2 border-b border-slate-800 pb-2">Recommendation</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{selectedReport.recommendation || "Consult a healthcare professional for detailed evaluation."}</p>
+                </div>
+
+                <div className="mt-8 pt-4 border-t border-slate-800">
+                  <p className="text-[11px] text-slate-500 italic leading-relaxed text-justify">
+                    {selectedReport.disclaimer || "This is an AI-assisted screening result and does not constitute a medical diagnosis. The analysis is generated by an automated deep learning model and should be reviewed by a qualified healthcare professional. Always consult a licensed physician for clinical decisions."}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

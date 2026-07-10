@@ -57,6 +57,9 @@ public class AiClientService {
                         .prediction("ERROR")
                         .confidence(0.0)
                         .message("AI X-ray service is not responding.")
+                        .clinicalSummary("N/A")
+                        .recommendation("N/A")
+                        .heatmapBase64(null)
                         .build();
             }
 
@@ -68,6 +71,9 @@ public class AiClientService {
                     .prediction("ERROR")
                     .confidence(0.0)
                     .message("Failed to send X-ray to AI service.")
+                    .clinicalSummary("N/A")
+                    .recommendation("N/A")
+                    .heatmapBase64(null)
                     .build();
         }
     }

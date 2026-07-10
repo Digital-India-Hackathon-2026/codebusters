@@ -16,4 +16,10 @@ public class XrayResponse{
 
     private String message;
 
+    private String clinicalSummary;
+
+    private String recommendation;
+
+    private String heatmapBase64;
+
 }

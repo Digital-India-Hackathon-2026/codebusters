@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../services/api";
 import DashboardCard from "../components/DashboardCard";
 import { Link } from "react-router-dom";
-import { LayoutDashboard, ShieldAlert, Heart, Calendar, MessageSquare, ArrowRight, Loader2, Sparkles, Activity } from "lucide-react";
+import { LayoutDashboard, ShieldAlert, Heart, Calendar, MessageSquare, ArrowRight, Loader2, Sparkles, Activity, Target, Clock, GitCompare } from "lucide-react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -175,7 +175,7 @@ function Dashboard() {
             <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
               <Activity size={18} className="text-sky-405" /> Medical Actions
             </h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               <Link 
                 to="/risk" 
                 className="p-3 bg-slate-950 hover:bg-slate-900 border border-slate-850 rounded-xl text-xs text-center font-bold text-slate-350 hover:text-sky-400 transition-all flex flex-col gap-2 justify-center items-center"
@@ -199,6 +199,24 @@ function Dashboard() {
                 className="p-3 bg-slate-950 hover:bg-slate-900 border border-slate-850 rounded-xl text-xs text-center font-bold text-slate-350 hover:text-sky-400 transition-all flex flex-col gap-2 justify-center items-center"
               >
                 <MessageSquare size={20} className="text-sky-400" /> Chat Copilot
+              </Link>
+              <Link 
+                to="/tracker" 
+                className="p-3 bg-slate-950 hover:bg-slate-900 border border-slate-850 rounded-xl text-xs text-center font-bold text-slate-350 hover:text-sky-400 transition-all flex flex-col gap-2 justify-center items-center"
+              >
+                <Target size={20} className="text-purple-400" /> Tracker
+              </Link>
+              <Link 
+                to="/timeline" 
+                className="p-3 bg-slate-950 hover:bg-slate-900 border border-slate-850 rounded-xl text-xs text-center font-bold text-slate-350 hover:text-sky-400 transition-all flex flex-col gap-2 justify-center items-center"
+              >
+                <Clock size={20} className="text-amber-400" /> Timeline
+              </Link>
+              <Link 
+                to="/scan-comparison" 
+                className="p-3 bg-slate-950 hover:bg-slate-900 border border-slate-850 rounded-xl text-xs text-center font-bold text-slate-350 hover:text-sky-400 transition-all flex flex-col gap-2 justify-center items-center"
+              >
+                <GitCompare size={20} className="text-pink-400" /> Compare
               </Link>
             </div>
           </div>
