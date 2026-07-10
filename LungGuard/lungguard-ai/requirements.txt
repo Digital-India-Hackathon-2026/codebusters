@@ -1,0 +1,32 @@
+# ── LungGuard AI Service Dependencies ───────────────────────────────
+# Core
+fastapi==0.115.12
+uvicorn==0.34.3
+python-multipart==0.0.20
+pydantic==2.11.3
+starlette==0.46.2
+
+# ML / Data Science
+scikit-learn==1.6.1
+pandas==2.2.3
+numpy==1.26.4
+joblib==1.4.2
+
+# PyTorch (CPU versions — change to CUDA versions if you have a GPU)
+torch==2.1.2
+torchvision==0.16.2
+
+# Image processing
+Pillow==11.2.1
+
+# Google Gemini AI
+google-generativeai==0.8.5
+
+# Environment
+python-dotenv==1.1.0
+
+# HTTP
+requests==2.32.3
+
+# Utilities
+colorama==0.4.6
